@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mural Interactivo: Proyectos Interdisciplinarios 4° Grado - MEDUCA 2026</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .font-handwriting {
+      font-family: 'Caveat', cursive;
+    }
+    /* Estilo efecto corcho / mural de aula */
+    .bg-mural-pattern {
+      background-color: #f8fafc;
+      background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+    .sticky-note {
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .sticky-note:hover {
+      transform: translateY(-4px) rotate(0deg) !important;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    .clip-pin {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+<body class="bg-mural-pattern text-slate-800 min-h-screen">
+
+  <!-- ==================== HEADER DINÁMICO & LLAMATIVO ==================== -->
+  <header class="bg-gradient-to-r from-emerald-600 via-teal-600 to-amber-500 text-white shadow-xl relative overflow-hidden">
+    <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none">
+      <i data-lucide="sparkles" class="w-72 h-72"></i>
+    </div>
+    <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-amber-200 text-xs font-semibold uppercase tracking-wider mb-2">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            Actualización Curricular MEDUCA 2026 • 4° Grado Primaria
+          </div>
+          <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">
+            Mural Pedagógico Interdisciplinario 🌟
+          </h1>
+          <p class="text-emerald-100 text-base md:text-lg mt-2 max-w-3xl">
+            Guía práctica paso a paso para docentes: transforma contenidos en situaciones auténticas de aprendizaje usando el formato oficial de Panamá Oeste y el poder de la IA educativa.
+          </p>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button onclick="document.getElementById('generador-proyectos').scrollIntoView({behavior: 'smooth'})" class="px-5 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold rounded-xl shadow-lg transition flex items-center gap-2 justify-center">
+            <i data-lucide="lightbulb" class="w-5 h-5"></i>
+            Simulador de Proyectos
+          </button>
+          <button onclick="window.print()" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white font-semibold rounded-xl border border-white/30 transition flex items-center gap-2 justify-center">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            Imprimir / Guardar PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Metáfora: El Sancocho Pedagógico -->
+      <div class="mt-6 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20 flex flex-wrap items-center gap-4 text-sm">
+        <span class="flex items-center gap-2 font-bold text-amber-200 text-base">
+          🍲 El Principio del Sancocho Pedagógico:
+        </span>
+        <span class="bg-emerald-800/50 px-3 py-1 rounded-lg"><strong>Ingredientes:</strong> Asignaturas (Español, Ciencias, Matemáticas...)</span>
+        <span class="bg-amber-800/50 px-3 py-1 rounded-lg"><strong>La Olla:</strong> Proyecto Común</span>
+        <span class="bg-rose-800/50 px-3 py-1 rounded-lg"><strong>El Fuego:</strong> Desafío o Problema Real</span>
+        <span class="bg-indigo-800/50 px-3 py-1 rounded-lg"><strong>El Plato Listo:</strong> Producto Tangible Integrado</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== NAVEGADOR DEL MURAL ==================== -->
+  <nav class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between overflow-x-auto py-2 gap-2 text-sm font-semibold">
+      <button onclick="showSection('reglas')" id="tab-reglas" class="tab-btn px-4 py-2 rounded-lg text-emerald-700 bg-emerald-50 border border-emerald-200 flex items-center gap-2">
+        <i data-lucide="compass" class="w-4 h-4"></i> 1. Fundamentos & Reglas de Oro
+      </button>
+      <button onclick="showSection('ruta')" id="tab-ruta" class="tab-btn px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <i data-lucide="map" class="w-4 h-4"></i> 2. La Ruta Paso a Paso (MEDUCA)
+      </button>
+      <button onclick="showSection('banco')" id="tab-banco" class="tab-btn px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <i data-lucide="folder-check" class="w-4 h-4"></i> 3. Banco de Proyectos 4°
+      </button>
+      <button onclick="showSection('ia')" id="tab-ia" class="tab-btn px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <i data-lucide="bot" class="w-4 h-4"></i> 4. Kit Gemini & NotebookLM
+      </button>
+      <button onclick="showSection('evaluacion')" id="tab-evaluacion" class="tab-btn px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 flex items-center gap-2">
+        <i data-lucide="check-square" class="w-4 h-4"></i> 5. Evaluación Auténtica
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- SECCIÓN 1: FUNDAMENTOS Y REGLAS DE ORO -->
+    <section id="sec-reglas" class="content-section space-y-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-slate-900">
+          ¿Cajones Aislados o el Mundo Real?
+        </h2>
+        <p class="text-slate-600 mt-2">
+          En la vida cotidiana, los problemas no vienen etiquetados como "solo de ciencias" o "solo de matemáticas". El rediseño 2026 exige superar el aula fragmentada.
+        </p>
+      </div>
+
+      <!-- Comparativa visual -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Tarjeta Tradicional -->
+        <div class="relative bg-white rounded-2xl p-6 border-2 border-slate-200 shadow-md">
+          <div class="clip-pin bg-slate-400"></div>
+          <div class="flex items-center gap-3 text-rose-600 font-bold text-lg mb-4">
+            <i data-lucide="archive" class="w-6 h-6"></i>
+            El Enfoque Tradicional ("En Cajones")
+          </div>
+          <ul class="space-y-3 text-slate-600 text-sm">
+            <li class="flex items-start gap-2">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 shrink-0"></i>
+              <span><strong>Materias aisladas:</strong> Español a primera hora, Matemáticas a la segunda; sin diálogo ni conexión entre temas.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 shrink-0"></i>
+              <span><strong>Docentes en islas:</strong> Cada maestro planifica por separado sin coordinar retos comunes.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="x-circle" class="w-5 h-5 text-rose-500 shrink-0"></i>
+              <span><strong>Memorización efímera:</strong> El niño estudia solo para la prueba sumativa del viernes y olvida el aprendizaje el lunes.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tarjeta Interdisciplinaria -->
+        <div class="relative bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border-2 border-emerald-300 shadow-md">
+          <div class="clip-pin bg-emerald-500"></div>
+          <div class="flex items-center gap-3 text-emerald-800 font-bold text-lg mb-4">
+            <i data-lucide="network" class="w-6 h-6"></i>
+            El Enfoque Interdisciplinario (MEDUCA 2026)
+          </div>
+          <ul class="space-y-3 text-emerald-950 text-sm">
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+              <span><strong>Reto contextual:</strong> Un problema real de la comunidad escolar (nutrición, basura, agua, identidad comunitaria).</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+              <span><strong>Sin perder identidad:</strong> Cada materia conserva su rigor, objetivos e indicadores, pero los articula en un producto final útil.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0"></i>
+              <span><strong>Aprender haciendo:</strong> El estudiante es el protagonista e investigador activo, y el docente es el tutor mediador.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 4 Pistas Clave para Docentes de 4° Grado -->
+      <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-6 relative">
+        <h3 class="text-xl font-bold text-amber-900 flex items-center gap-2 mb-4">
+          <i data-lucide="alert-triangle" class="w-6 h-6 text-amber-600"></i>
+          ¡Atención Docentes! Reglas de Oro para Cuarto Grado
+        </h3>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs md:text-sm">
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-sm">
+            <span class="text-2xl font-black text-amber-600">01</span>
+            <h4 class="font-bold text-slate-800 mt-1">¡El proyecto se hace en el aula!</h4>
+            <p class="text-slate-600 mt-1">Si se envía para la casa, lo termina haciendo el acudiente. La indagación, maquetas y cálculos ocurren en el salón escolar.</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-sm">
+            <span class="text-2xl font-black text-emerald-600">02</span>
+            <h4 class="font-bold text-slate-800 mt-1">Regla de 2 a 4 asignaturas</h4>
+            <p class="text-slate-600 mt-1">No intentes forzar todas las materias en el primer proyecto. Comienza con una red de 2 o 3 asignaturas afines bien engranadas.</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-sm">
+            <span class="text-2xl font-black text-indigo-600">03</span>
+            <h4 class="font-bold text-slate-800 mt-1">El Producto antes del Plan</h4>
+            <p class="text-slate-600 mt-1">Define primero el producto tangible (un recetario, un podcast, una feria o maqueta viva), y luego alinea los contenidos necesarios.</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-sm">
+            <span class="text-2xl font-black text-rose-600">04</span>
+            <h4 class="font-bold text-slate-800 mt-1">Evaluación 60% / 40%</h4>
+            <p class="text-slate-600 mt-1">60% proceso (avances diarios, listas de cotejo, trabajo colaborativo) y 40% producto final sustentado ante una audiencia real.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: LA RUTA PASO A PASO SEGÚN FORMATO MEDUCA -->
+    <section id="sec-ruta" class="content-section hidden space-y-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-slate-900">
+          La Ruta Metodológica en 4 Fases (Formato Panamá Oeste)
+        </h2>
+        <p class="text-slate-600 mt-2">
+          Cómo llenar el documento oficial de planificación sin estrés y convertirlo en una experiencia viva de aula.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-4">
+        <!-- Paso 1 -->
+        <div class="bg-blue-50 border-t-4 border-blue-500 rounded-xl p-5 shadow-sm">
+          <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm mb-3">1</div>
+          <h3 class="font-bold text-blue-950 text-base">El ADN del Proyecto</h3>
+          <p class="text-xs text-blue-800 mt-1 mb-3">Cabecera, título motivador y justificación contextualizada.</p>
+          <div class="bg-white p-3 rounded-lg border border-blue-200 text-xs text-slate-700 space-y-1">
+            <p><strong>• Título:</strong> Debe ser retador (Ej: <em>"Guardianes del Huerto y la Lonchera Saludable"</em>).</p>
+            <p><strong>• Justificación:</strong> ¿Qué problema real del centro o comunidad resuelve?</p>
+            <p><strong>• Duración:</strong> Recomendado 4 semanas (2 a 3 horas semanales por materia).</p>
+          </div>
+        </div>
+
+        <!-- Paso 2 -->
+        <div class="bg-emerald-50 border-t-4 border-emerald-500 rounded-xl p-5 shadow-sm">
+          <div class="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm mb-3">2</div>
+          <h3 class="font-bold text-emerald-950 text-base">El Corazón Curricular</h3>
+          <p class="text-xs text-emerald-800 mt-1 mb-3">Alineación exacta con el programa de 4° grado 2026.</p>
+          <div class="bg-white p-3 rounded-lg border border-emerald-200 text-xs text-slate-700 space-y-1">
+            <p><strong>• Competencias:</strong> Elegir de las 10 del perfil (Ej: C3 Mundo Físico, C2 Lógico-Matemática).</p>
+            <p><strong>• Objetivos e Indicadores:</strong> Copiados directamente del programa oficial.</p>
+            <p><strong>• Contenidos:</strong> Conceptuales, procedimentales y actitudinales.</p>
+          </div>
+        </div>
+
+        <!-- Paso 3 -->
+        <div class="bg-amber-50 border-t-4 border-amber-500 rounded-xl p-5 shadow-sm">
+          <div class="w-8 h-8 rounded-full bg-amber-600 text-white font-bold flex items-center justify-center text-sm mb-3">3</div>
+          <h3 class="font-bold text-amber-950 text-base">Fases y Cronograma</h3>
+          <p class="text-xs text-amber-800 mt-1 mb-3">Secuencia didáctica organizada semana a semana.</p>
+          <div class="bg-white p-3 rounded-lg border border-amber-200 text-xs text-slate-700 space-y-1">
+            <p><strong>• Sem 1:</strong> Lanzamiento del reto y organización de equipos cooperativos.</p>
+            <p><strong>• Sem 2:</strong> Indagación y aplicación disciplinar en el aula.</p>
+            <p><strong>• Sem 3:</strong> Construcción del producto integrado.</p>
+            <p><strong>• Sem 4:</strong> Exposición auténtica y metacognición.</p>
+          </div>
+        </div>
+
+        <!-- Paso 4 -->
+        <div class="bg-purple-50 border-t-4 border-purple-500 rounded-xl p-5 shadow-sm">
+          <div class="w-8 h-8 rounded-full bg-purple-600 text-white font-bold flex items-center justify-center text-sm mb-3">4</div>
+          <h3 class="font-bold text-purple-950 text-base">Evaluación Auténtica</h3>
+          <p class="text-xs text-purple-800 mt-1 mb-3">Triangulación que mide desempeño, no solo memoria.</p>
+          <div class="bg-white p-3 rounded-lg border border-purple-200 text-xs text-slate-700 space-y-1">
+            <p><strong>• Formativa (60%):</strong> Bitácora, listas de cotejo de proceso y tickets de salida.</p>
+            <p><strong>• Sumativa (40%):</strong> Rúbrica analítica del producto final y defensa oral.</p>
+            <p><strong>• Triangulación:</strong> Auto, coevaluación y heteroevaluación docente.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuadro Desglosado del Formato Oficial para Imprimir/Ver -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-300 shadow-md">
+        <h4 class="font-extrabold text-slate-900 text-lg mb-3 flex items-center gap-2">
+          <i data-lucide="file-spreadsheet" class="w-5 h-5 text-teal-600"></i>
+          Estructura del Formato Oficial MEDUCA (Región Panamá Oeste)
+        </h4>
+        <div class="overflow-x-auto text-xs">
+          <table class="min-w-full divide-y divide-slate-200 border border-slate-200">
+            <thead class="bg-slate-100 font-bold text-slate-700">
+              <tr>
+                <th class="p-3 text-left">Sección del Formato</th>
+                <th class="p-3 text-left">¿Qué debe escribir el docente de 4°?</th>
+                <th class="p-3 text-left">Ejemplo Práctico</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-slate-600">
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Datos Generales</td>
+                <td class="p-3">Centro, Docentes, Asignaturas participantes, Grado (4°), Trimestre y Duración.</td>
+                <td class="p-3">C.E.B.G. Bilingüe Virgen de Guadalupe • 4° A y B • 4 semanas.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Título & Justificación</td>
+                <td class="p-3">Nombre creativo y justificación basada en una necesidad escolar comunitaria.</td>
+                <td class="p-3"><em>"Detectamos alto consumo de ultraprocesados en el recreo y desperdicio de desechos plásticos..."</em></td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Objetivo General</td>
+                <td class="p-3">Propósito holístico del reto que integra las asignaturas participantes.</td>
+                <td class="p-3">Diseñar una campaña escolar y un prototipo de huerto vertical para promover hábitos alimentarios sanos.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Matriz Curricular</td>
+                <td class="p-3">Competencias, Objetivos de Aprendizaje, Indicadores de Logro y Contenidos por asignatura.</td>
+                <td class="p-3">Ciencias (Sistema Digestivo/Nutrición) + Matemáticas (Áreas y Gráficos) + Español (Textos mixtos).</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Fases y Cronograma</td>
+                <td class="p-3">Actividades secuenciadas por semana con responsables y evidencias requeridas.</td>
+                <td class="p-3">Semana 1: Encuesta. Semana 2: Mediciones y recetas. Semana 3: Afiches y huerto. Semana 4: Mini-Feria.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Evaluación & Criterios</td>
+                <td class="p-3">Instrumentos analíticos (rúbricas, listas de cotejo) y porcentajes acordados.</td>
+                <td class="p-3">Lista de cotejo en aula (60%) + Rúbrica de la Feria Escolar (40%).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: BANCO DE PROYECTOS MODELO PARA 4° GRADO -->
+    <section id="sec-banco" class="content-section hidden space-y-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-slate-900">
+          Banco de Proyectos Interdisciplinarios para 4° Grado
+        </h2>
+        <p class="text-slate-600 mt-2">
+          3 propuestas integradas y listas para contextualizar en escuelas urbanas o rurales, alineadas con los contenidos oficiales 2026.
+        </p>
+      </div>
+
+      <!-- Pestañas de Proyectos -->
+      <div class="flex flex-wrap justify-center gap-3">
+        <button onclick="showProject('p1')" id="btn-p1" class="proj-btn px-5 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white shadow-md flex items-center gap-2">
+          <i data-lucide="salad" class="w-4 h-4"></i> Proyecto 1: Guardianes del Huerto y la Salud
+        </button>
+        <button onclick="showProject('p2')" id="btn-p2" class="proj-btn px-5 py-2.5 rounded-xl font-bold text-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center gap-2">
+          <i data-lucide="recycle" class="w-4 h-4"></i> Proyecto 2: Eco-Inventores Escolares
+        </button>
+        <button onclick="showProject('p3')" id="btn-p3" class="proj-btn px-5 py-2.5 rounded-xl font-bold text-sm bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-4 h-4"></i> Proyecto 3: Leyendas Vivas de mi Comunidad
+        </button>
+      </div>
+
+      <!-- PROYECTO 1 -->
+      <div id="proj-p1" class="project-card bg-white rounded-3xl p-6 md:p-8 border-2 border-emerald-300 shadow-xl space-y-6">
+        <div class="flex flex-wrap justify-between items-start gap-4">
+          <div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">Ciencias Naturales • Matemáticas • Tecnologías (Agropecuaria/Familia) • Español</span>
+            <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-2">
+              🌱 Proyecto 1: "Guardianes del Huerto y la Lonchera Nutritiva"
+            </h3>
+            <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+              <strong>Pregunta Retadora:</strong> ¿Cómo podemos diseñar una lonchera saludable y cultivar nuestras propias hierbas o vegetales en la escuela usando materiales reciclados y cuidando el presupuesto familiar?
+            </p>
+          </div>
+          <div class="bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-200 text-center">
+            <span class="text-xs text-emerald-700 font-semibold block">Duración</span>
+            <span class="text-lg font-black text-emerald-900">4 Semanas</span>
+          </div>
+        </div>
+
+        <!-- Mapeo Curricular del Proyecto 1 -->
+        <div class="grid md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200">
+            <h4 class="font-bold text-emerald-900 mb-2 flex items-center gap-1.5">
+              <i data-lucide="microscope" class="w-4 h-4 text-emerald-600"></i> Ciencias Naturales
+            </h4>
+            <p class="font-semibold text-slate-800">Contenido 4°:</p>
+            <p>Sistema digestivo, nutrición y grupos de nutrientes (proteínas, carbohidratos, grasas, vitaminas). Hábitos de higiene alimentaria.</p>
+            <p class="font-semibold text-slate-800 mt-2">Evidencia de Proceso:</p>
+            <p>Ficha de análisis nutricional de alimentos consumidos en el recreo escolar.</p>
+          </div>
+
+          <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+            <h4 class="font-bold text-amber-900 mb-2 flex items-center gap-1.5">
+              <i data-lucide="calculator" class="w-4 h-4 text-amber-600"></i> Matemáticas
+            </h4>
+            <p class="font-semibold text-slate-800">Contenido 4°:</p>
+            <p>Unidades de masa (kg, g), capacidad (litros, ml), área en cuadrículas ($cm^2$) y gráficas de barras para encuestas.</p>
+            <p class="font-semibold text-slate-800 mt-2">Evidencia de Proceso:</p>
+            <p>Encuesta sobre hábitos alimentarios y cálculo del área del huerto escolar vertical.</p>
+          </div>
+
+          <div class="bg-teal-50/70 p-4 rounded-xl border border-teal-200">
+            <h4 class="font-bold text-teal-900 mb-2 flex items-center gap-1.5">
+              <i data-lucide="sprout" class="w-4 h-4 text-teal-600"></i> Tecnologías / Agropecuaria
+            </h4>
+            <p class="font-semibold text-slate-800">Contenido 4°:</p>
+            <p>Beneficios del huerto escolar (nutritivos y económicos), siembra en botellas plásticas recicladas, abono orgánico y riego.</p>
+            <p class="font-semibold text-slate-800 mt-2">Evidencia de Proceso:</p>
+            <p>Semillero de culantro, ají chombo o albahaca en botellas de plástico recicladas.</p>
+          </div>
+
+          <div class="bg-indigo-50/70 p-4 rounded-xl border border-indigo-200">
+            <h4 class="font-bold text-indigo-900 mb-2 flex items-center gap-1.5">
+              <i data-lucide="file-text" class="w-4 h-4 text-indigo-600"></i> Español
+            </h4>
+            <p class="font-semibold text-slate-800">Contenido 4°:</p>
+            <p>Textos mixtos (afiches, folletos publicitarios), redacción de párrafos y uso de conectores aditivos y organizativos.</p>
+            <p class="font-semibold text-slate-800 mt-2">Evidencia de Proceso:</p>
+            <p>Afiche publicitario promoviendo la lonchera saludable para compartir con los acudientes.</p>
+          </div>
+        </div>
+
+        <!-- Producto Final y Fases -->
+        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">🏆</span>
+            <div>
+              <h4 class="font-bold text-slate-900">Producto Final Tangible:</h4>
+              <p class="text-xs text-slate-600"><strong>"Feria Escolar de la Lonchera y Huerta Viva":</strong> Instalación de módulos de huertos verticales con botellas, recetario saludable impreso ilustrado y exposición oral ante los padres de familia y otros grados.</p>
+            </div>
+          </div>
+
+          <!-- Cronograma 4 semanas -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+            <div class="bg-white p-3 rounded-lg border border-slate-200">
+              <span class="font-bold text-emerald-700 block">Semana 1: Activación</span>
+              Diagnóstico de meriendas escolares y encuesta estadística en el aula.
+            </div>
+            <div class="bg-white p-3 rounded-lg border border-slate-200">
+              <span class="font-bold text-emerald-700 block">Semana 2: Laboratorio</span>
+              Siembra de semillas en botellas, análisis de etiquetas de comida chatarra y cálculo de porciones.
+            </div>
+            <div class="bg-white p-3 rounded-lg border border-slate-200">
+              <span class="font-bold text-emerald-700 block">Semana 3: Construcción</span>
+              Redacción de afiches de la lonchera saludable y armado de paneles de huerto vertical.
+            </div>
+            <div class="bg-white p-3 rounded-lg border border-slate-200">
+              <span class="font-bold text-emerald-700 block">Semana 4: Socialización</span>
+              Inauguración de la huerta, degustación de ensaladas caseras y evaluación con rúbrica compartida.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROYECTO 2 -->
+      <div id="proj-p2" class="project-card hidden bg-white rounded-3xl p-6 md:p-8 border-2 border-teal-300 shadow-xl space-y-6">
+        <div class="flex flex-wrap justify-between items-start gap-4">
+          <div>
+            <span class="px-3 py-1 bg-teal-100 text-teal-800 text-xs font-bold rounded-full">Ciencias Naturales • Tecnología / Informática • Expresiones Artísticas • Ciencias Sociales</span>
+            <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-2">
+              ⚙️ Proyecto 2: "Eco-Inventores: Máquinas y Arte para Cuidar Nuestro Entorno"
+            </h3>
+            <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+              <strong>Pregunta Retadora:</strong> ¿Cómo podemos aplicar el funcionamiento de las máquinas simples y el arte reciclado para recolectar, clasificar y reducir la basura en los patios escolares?
+            </p>
+          </div>
+          <div class="bg-teal-50 px-4 py-2 rounded-2xl border border-teal-200 text-center">
+            <span class="text-xs text-teal-700 font-semibold block">Duración</span>
+            <span class="text-lg font-black text-teal-900">4 Semanas</span>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200">
+            <h4 class="font-bold text-blue-900 mb-2 flex items-center gap-1.5"><i data-lucide="wrench" class="w-4 h-4"></i> Ciencias Naturales</h4>
+            <p><strong>Contenido:</strong> Máquinas simples (palanca, polea, plano inclinado), fuerza aplicada, resistencia y punto de apoyo.</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Prototipo funcional a escala de un recolector con palanca o plano inclinado usando cartón y palillos.</p>
+          </div>
+          <div class="bg-purple-50/70 p-4 rounded-xl border border-purple-200">
+            <h4 class="font-bold text-purple-900 mb-2 flex items-center gap-1.5"><i data-lucide="palette" class="w-4 h-4"></i> Expresiones Artísticas</h4>
+            <p><strong>Contenido:</strong> El collage, estilo cubista (Picasso), armonía del color (gamas frías y cálidas) y materiales reciclables.</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Mural artístico estilo collage cubista elaborado con tapitas plásticas y envases desechados.</p>
+          </div>
+          <div class="bg-teal-50/70 p-4 rounded-xl border border-teal-200">
+            <h4 class="font-bold text-teal-900 mb-2 flex items-center gap-1.5"><i data-lucide="cpu" class="w-4 h-4"></i> Tecnología / Informática</h4>
+            <p><strong>Contenido:</strong> Pensamiento computacional, algoritmos sencillos y diagramas de flujo ("si hay plástico → al cesto azul").</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Diagrama de flujo dibujado o digital que guía la clasificación correcta de residuos en la escuela.</p>
+          </div>
+          <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200">
+            <h4 class="font-bold text-amber-900 mb-2 flex items-center gap-1.5"><i data-lucide="globe" class="w-4 h-4"></i> Ciencias Sociales</h4>
+            <p><strong>Contenido:</strong> Recursos naturales renovables y no renovables de la provincia, impacto humano y autoridades de protección.</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Tríptico informativo para los vecinos sobre la conservación de los ríos y suelos locales.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm">🏆</span>
+            <div>
+              <h4 class="font-bold text-slate-900">Producto Final Tangible:</h4>
+              <p class="text-xs text-slate-600"><strong>"Museo Interactivo de la Eco-Tecnología":</strong> Exposición de dispositivos mecánicos caseros para recoger basura, acompañados de estaciones de clasificación con diagramas lógicos y galería de arte reciclado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROYECTO 3 -->
+      <div id="proj-p3" class="project-card hidden bg-white rounded-3xl p-6 md:p-8 border-2 border-indigo-300 shadow-xl space-y-6">
+        <div class="flex flex-wrap justify-between items-start gap-4">
+          <div>
+            <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-bold rounded-full">Español • Ciencias Sociales • Expresiones Artísticas • Religión y Valores</span>
+            <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-2">
+              🎭 Proyecto 3: "Leyendas Vivas y Valores de mi Provincia"
+            </h3>
+            <p class="text-slate-600 text-sm mt-1 max-w-3xl">
+              <strong>Pregunta Retadora:</strong> ¿Cómo podemos rescatar las leyendas y tradiciones de nuestros abuelos para fortalecer la identidad nacional, los valores familiares y presentarlas en un festival teatral para la comunidad?
+            </p>
+          </div>
+          <div class="bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-200 text-center">
+            <span class="text-xs text-indigo-700 font-semibold block">Duración</span>
+            <span class="text-lg font-black text-indigo-900">4 Semanas</span>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-4 text-xs">
+          <div class="bg-red-50/70 p-4 rounded-xl border border-red-200">
+            <h4 class="font-bold text-red-900 mb-2 flex items-center gap-1.5"><i data-lucide="book" class="w-4 h-4"></i> Español</h4>
+            <p><strong>Contenido:</strong> La leyenda y el texto narrativo (inicio, nudo, desenlace), la entrevista a personas de la comunidad y guion teatral básico.</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Guion teatral adaptado a partir de testimonios orales de sus familiares.</p>
+          </div>
+          <div class="bg-yellow-50/70 p-4 rounded-xl border border-yellow-200">
+            <h4 class="font-bold text-yellow-900 mb-2 flex items-center gap-1.5"><i data-lucide="map-pin" class="w-4 h-4"></i> Ciencias Sociales</h4>
+            <p><strong>Contenido:</strong> Reseña histórica de la provincia/comarca, origen de las comunidades, personajes históricos y folclore regional.</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Mapa histórico ilustrado de la provincia con los lugares míticos de las leyendas.</p>
+          </div>
+          <div class="bg-pink-50/70 p-4 rounded-xl border border-pink-200">
+            <h4 class="font-bold text-pink-900 mb-2 flex items-center gap-1.5"><i data-lucide="music" class="w-4 h-4"></i> Expresiones Artísticas</h4>
+            <p><strong>Contenido:</strong> Expresión corporal y teatral, vestuario típico regional, elementos musicales (cumbia, tamborito) e instrumentos tradicionales.</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Montaje de títeres o dramatización con vestuario representativo elaborado con material reciclado.</p>
+          </div>
+          <div class="bg-indigo-50/70 p-4 rounded-xl border border-indigo-200">
+            <h4 class="font-bold text-indigo-900 mb-2 flex items-center gap-1.5"><i data-lucide="heart" class="w-4 h-4"></i> Religión, Moral y Valores</h4>
+            <p><strong>Contenido:</strong> El respeto a los mayores, la familia como núcleo transmisor de valores y la empatía en la convivencia comunitaria.</p>
+            <p class="mt-2 text-slate-600"><strong>Evidencia:</strong> Diario reflexivo sobre la enseñanza moral y el valor familiar transmitido en la historia.</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+          <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">🏆</span>
+            <div>
+              <h4 class="font-bold text-slate-900">Producto Final Tangible:</h4>
+              <p class="text-xs text-slate-600"><strong>"Festival de Leyendas y Tradición Oral":</strong> Antología ilustrada de cuentos y leyendas de la provincia y puesta en escena (teatro de sombras o títeres) presentada ante la comunidad escolar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: KIT GEMINI & NOTEBOOKLM -->
+    <section id="sec-ia" class="content-section hidden space-y-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-slate-900">
+          ¿Cómo Usar Gemini y NotebookLM como Asistentes Docentes?
+        </h2>
+        <p class="text-slate-600 mt-2">
+          La Inteligencia Artificial no reemplaza la creatividad del maestro panameño; potencia su tiempo al automatizar la creación de recursos curriculares contextualizados.
+        </p>
+      </div>
+
+      <!-- Cuadrícula Gemini vs NotebookLM -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Tarjeta GEMINI -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border-2 border-indigo-200 shadow-md">
+          <div class="flex items-center gap-3 text-indigo-700 font-extrabold text-xl mb-3">
+            <i data-lucide="sparkle" class="w-6 h-6"></i>
+            Gemini: El Diseñador de Recursos y Retos
+          </div>
+          <p class="text-xs text-slate-600 mb-4">
+            Úsalo para generar redacciones, preguntas socráticas, rúbricas personalizadas, casos de estudio y adaptación para niños con ritmos de aprendizaje diversos.
+          </p>
+
+          <div class="space-y-3">
+            <!-- Prompt Box 1 -->
+            <div class="bg-white p-3 rounded-xl border border-indigo-200 text-xs">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-indigo-800">Prompt 1: Generador de Pregunta Retadora</span>
+                <button onclick="copyPrompt('p-gemini-1')" class="text-indigo-600 hover:text-indigo-800 text-[11px] font-bold flex items-center gap-1">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                </button>
+              </div>
+              <p id="p-gemini-1" class="text-slate-700 font-mono bg-slate-50 p-2 rounded">
+                "Actúa como asesor pedagógico del MEDUCA Panamá. Sugiere 3 preguntas retadoras y contextualizadas para estudiantes de 4° grado sobre el tema de nutrición y huerto escolar, que integren Ciencias Naturales, Matemáticas y Español."
+              </p>
+            </div>
+
+            <!-- Prompt Box 2 -->
+            <div class="bg-white p-3 rounded-xl border border-indigo-200 text-xs">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-indigo-800">Prompt 2: Rúbrica Analítica de Producto Final</span>
+                <button onclick="copyPrompt('p-gemini-2')" class="text-indigo-600 hover:text-indigo-800 text-[11px] font-bold flex items-center gap-1">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                </button>
+              </div>
+              <p id="p-gemini-2" class="text-slate-700 font-mono bg-slate-50 p-2 rounded">
+                "Crea una rúbrica analítica en tabla para evaluar un proyecto interdisciplinario de 4° grado (Feria escolar de ciencias). Criterios: Rigor científico, aplicación matemática, expresión oral en equipo y creatividad. 4 niveles: Excelente (5), Bueno (4), En desarrollo (3), Iniciado (2)."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta NOTEBOOKLM -->
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-2xl border-2 border-amber-200 shadow-md">
+          <div class="flex items-center gap-3 text-amber-800 font-extrabold text-xl mb-3">
+            <i data-lucide="book-marked" class="w-6 h-6"></i>
+            NotebookLM: El Cerebro Curricular del Docente
+          </div>
+          <p class="text-xs text-slate-600 mb-4">
+            Sube el PDF oficial del <strong>Programa de Cuarto Grado 2026</strong> y la <strong>Guía de Proyectos</strong> a un cuaderno de NotebookLM. La herramienta responderá basada estrictamente en los documentos oficiales panameños sin alucinar.
+          </p>
+
+          <div class="space-y-3">
+            <!-- Caso de uso 1 -->
+            <div class="bg-white p-3 rounded-xl border border-amber-200 text-xs">
+              <h5 class="font-bold text-amber-900 mb-1">🎧 1. Generar el "Audio Overview" (Podcast Pedagógico)</h5>
+              <p class="text-slate-600">
+                Al subir el programa, haz clic en <em>Deep Dive Audio</em>. Generará un podcast en audio de 8 a 10 minutos donde dos locutores explican de forma amena cómo articular los contenidos de Ciencias y Español de 4° grado. ¡Ideal para escuchar mientras viajas a la escuela!
+              </p>
+            </div>
+
+            <!-- Caso de uso 2 -->
+            <div class="bg-white p-3 rounded-xl border border-amber-200 text-xs">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-bold text-amber-800">Pregunta Clave en NotebookLM:</span>
+                <button onclick="copyPrompt('p-noteb-1')" class="text-amber-600 hover:text-amber-800 text-[11px] font-bold flex items-center gap-1">
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copiar
+                </button>
+              </div>
+              <p id="p-noteb-1" class="text-slate-700 font-mono bg-slate-50 p-2 rounded">
+                "Basándote exclusivamente en el programa de cuarto grado de Ciencias Naturales y Matemáticas cargado, lístame los objetivos e indicadores de logro exactos que se relacionan con medidas, fracciones y nutrición del cuerpo humano."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIMULADOR INTERACTIVO DE IDEAS PARA DOCENTES -->
+      <div id="generador-proyectos" class="bg-white rounded-3xl p-6 md:p-8 border-2 border-teal-300 shadow-lg">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="p-2.5 rounded-xl bg-teal-100 text-teal-700">
+            <i data-lucide="wand-2" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-slate-900">Simulador de Ideas Interdisciplinarias 4° Grado</h3>
+            <p class="text-xs text-slate-500">Selecciona dos asignaturas y una temática de tu comunidad para generar al instante una propuesta de proyecto.</p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-3 gap-4 mb-4 text-xs md:text-sm">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Materia Principal:</label>
+            <select id="sel-mat1" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500">
+              <option value="Ciencias Naturales">Ciencias Naturales (Sistemas, Máquinas, Suelo)</option>
+              <option value="Ciencias Sociales">Ciencias Sociales (Provincia, Historia, Población)</option>
+              <option value="Matemáticas">Matemáticas (Medidas, Fracciones, Estadísticas)</option>
+              <option value="Tecnologías">Tecnologías (Informática, Huerto, Hogar)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Materia Articulada:</label>
+            <select id="sel-mat2" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500">
+              <option value="Español">Español (Afiches, Cuentos, Cartas, Párrafos)</option>
+              <option value="Expresiones Artísticas">Expresiones Artísticas (Collage, Teatro, Danza)</option>
+              <option value="Religión y Valores">Religión y Valores (Convivencia, Cuidado de la Creación)</option>
+              <option value="Educación Física">Educación Física (Circuitos, Hábitos Activos)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Contexto Comunitario:</label>
+            <select id="sel-contexto" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500">
+              <option value="Agua y Clima">El cuidado del agua y los ríos de la provincia</option>
+              <option value="Alimentación">Los hábitos del recreo y productos locales</option>
+              <option value="Basura y Reciclaje">Manejo de plásticos en la escuela y el barrio</option>
+              <option value="Folclore y Tradición">Historias de los abuelos y festividades patrias</option>
+            </select>
+          </div>
+        </div>
+
+        <button onclick="generarIdeaProyecto()" class="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+          Generar Propuesta de Proyecto
+        </button>
+
+        <!-- Resultado dinámico -->
+        <div id="resultado-simulador" class="hidden mt-6 p-4 rounded-2xl bg-teal-50/70 border border-teal-200 text-xs md:text-sm space-y-2">
+          <!-- Inyectado por JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: EVALUACIÓN AUTÉNTICA (RÚBRICA & FORMATO) -->
+    <section id="sec-evaluacion" class="content-section hidden space-y-8">
+      <div class="text-center max-w-3xl mx-auto">
+        <h2 class="text-3xl font-extrabold text-slate-900">
+          Evaluación Auténtica: Evaluar el Camino, no solo el Fin
+        </h2>
+        <p class="text-slate-600 mt-2">
+          La evaluación interdisciplinaria debe verificar lo que el alumno es capaz de **hacer** con el conocimiento, eliminando la prueba tradicional memorística como único instrumento.
+        </p>
+      </div>
+
+      <!-- Esquema de Ponderación Sugerido -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-2xl border-2 border-emerald-300 shadow-md">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+              <i data-lucide="activity" class="w-5 h-5 text-emerald-600"></i>
+              Evaluación de Proceso en Aula (60%)
+            </h3>
+            <span class="bg-emerald-100 text-emerald-800 font-extrabold px-3 py-1 rounded-full text-xs">Formativa</span>
+          </div>
+          <p class="text-xs text-slate-600 mb-3">
+            Cada docente registra evidencias semanales específicas correspondientes a sus propios indicadores curriculares:
+          </p>
+          <ul class="space-y-2 text-xs text-slate-700">
+            <li class="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
+              <span>• Bitácora del estudiante / Diario reflexivo</span>
+              <span class="font-bold text-slate-500">Semanal</span>
+            </li>
+            <li class="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
+              <span>• Lista de cotejo de trabajo cooperativo en aula</span>
+              <span class="font-bold text-slate-500">Día a día</span>
+            </li>
+            <li class="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
+              <span>• Borradores, tablas de datos, dibujos y maquetas parciales</span>
+              <span class="font-bold text-slate-500">Formativo</span>
+            </li>
+            <li class="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
+              <span>• Tickets de salida o preguntas de metacognición</span>
+              <span class="font-bold text-slate-500">Por sesión</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border-2 border-indigo-300 shadow-md">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-900 text-lg flex items-center gap-2">
+              <i data-lucide="presentation" class="w-5 h-5 text-indigo-600"></i>
+              Evaluación de Producto Final Integrado (40%)
+            </h3>
+            <span class="bg-indigo-100 text-indigo-800 font-extrabold px-3 py-1 rounded-full text-xs">Sumativa</span>
+          </div>
+          <p class="text-xs text-slate-600 mb-3">
+            Rúbrica analítica compartida que evalúa el resultado tangible y la socialización ante el público escolar:
+          </p>
+          <ul class="space-y-2 text-xs text-slate-700">
+            <li class="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
+              <span>• Calidad, acabado y funcionamiento del producto tangible</span>
+              <span class="font-bold text-slate-500">15%</span>
+            </li>
+            <li class="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
+              <span>• Sustentación oral y dominio conceptual del reto</span>
+              <span class="font-bold text-slate-500">15%</span>
+            </li>
+            <li class="p-2.5 bg-slate-50 rounded-lg flex items-center justify-between">
+              <span>• Coevaluación entre pares y autoevaluación reflexiva</span>
+              <span class="font-bold text-slate-500">10%</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Rúbrica Analítica Modelo para Cuarto Grado -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-300 shadow-md">
+        <h4 class="font-extrabold text-slate-900 text-base mb-3 flex items-center gap-2">
+          <i data-lucide="table" class="w-5 h-5 text-amber-600"></i>
+          Rúbrica Analítica Modelo para el Producto Final (4° Grado)
+        </h4>
+        <div class="overflow-x-auto text-xs">
+          <table class="min-w-full divide-y divide-slate-200 border border-slate-200">
+            <thead class="bg-slate-100 font-bold text-slate-800">
+              <tr>
+                <th class="p-3 text-left">Criterio de Evaluación</th>
+                <th class="p-3 text-left">Excelente (5 pts)</th>
+                <th class="p-3 text-left">Satisfactorio (3-4 pts)</th>
+                <th class="p-3 text-left">En Proceso (1-2 pts)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-slate-700">
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Integración de Saberes</td>
+                <td class="p-3">El producto articula claramente conceptos de todas las asignaturas conectadas con sentido práctico.</td>
+                <td class="p-3">Se aprecian contenidos de las asignaturas pero aparecen algo desconectados entre sí.</td>
+                <td class="p-3">El producto solo muestra aportes de una sola materia, ignorando la interdisciplinariedad.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Rigor y Procedimientos</td>
+                <td class="p-3">Aplica cálculos, conceptos científicos y ortografía con precisión de cuarto grado.</td>
+                <td class="p-3">Comete errores menores en cálculos o redacción que no impiden comprender la solución.</td>
+                <td class="p-3">Presenta información conceptual inexacta o cálculos matemáticos no fundamentados.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Comunicación & Defensa Oral</td>
+                <td class="p-3">Expone sus ideas con voz clara, respeta turnos y explica el porqué de su propuesta con seguridad.</td>
+                <td class="p-3">Expone con claridad aunque recurre constantemente a leer fichas o notas de apoyo.</td>
+                <td class="p-3">Dificultad para explicar el producto o participar activamente en la exposición grupal.</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-slate-900">Trabajo Cooperativo en Aula</td>
+                <td class="p-3">Demuestra roles activos, colaboración constante y cuida los materiales del grupo en el salón.</td>
+                <td class="p-3">Cumple con las tareas asignadas pero requiere orientación docente para coordinar con el equipo.</td>
+                <td class="p-3">Poca participación en las labores de equipo o conflictos constantes sin resolver.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Ficha de Metacognición para Estudiantes -->
+      <div class="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-2xl p-6">
+        <h4 class="font-extrabold text-purple-900 text-base mb-2 flex items-center gap-2">
+          <i data-lucide="help-circle" class="w-5 h-5 text-purple-600"></i>
+          Ficha de Metacognición para el Niño de 4° Grado ("Boleto de Salida")
+        </h4>
+        <p class="text-xs text-slate-600 mb-4">
+          Imprime o proyecta estas 4 preguntas clave para que el estudiante reflexione sobre cómo aprendió al culminar cada semana:
+        </p>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <div class="bg-white p-3.5 rounded-xl border border-purple-200 shadow-sm">
+            <span class="text-xl">🤔</span>
+            <p class="font-bold text-slate-800 mt-1">1. ¿Qué descubrí?</p>
+            <p class="text-slate-500 mt-0.5">"Hoy aprendí algo nuevo sobre cómo funciona..."</p>
+          </div>
+          <div class="bg-white p-3.5 rounded-xl border border-purple-200 shadow-sm">
+            <span class="text-xl">🧗</span>
+            <p class="font-bold text-slate-800 mt-1">2. ¿Qué se me hizo difícil?</p>
+            <p class="text-slate-500 mt-0.5">"La parte que más me costó entender o hacer fue..."</p>
+          </div>
+          <div class="bg-white p-3.5 rounded-xl border border-purple-200 shadow-sm">
+            <span class="text-xl">🤝</span>
+            <p class="font-bold text-slate-800 mt-1">3. ¿Cómo colaboré?</p>
+            <p class="text-slate-500 mt-0.5">"Ayudé a mi equipo cuando..."</p>
+          </div>
+          <div class="bg-white p-3.5 rounded-xl border border-purple-200 shadow-sm">
+            <span class="text-xl">🌍</span>
+            <p class="font-bold text-slate-800 mt-1">4. ¿Para qué me sirve?</p>
+            <p class="text-slate-500 mt-0.5">"Puedo usar esto en mi casa o comunidad para..."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 text-center text-xs space-y-2">
+    <div class="flex items-center justify-center gap-2 text-slate-200 font-bold">
+      <i data-lucide="graduation-cap" class="w-5 h-5 text-emerald-400"></i>
+      Mural Interactivo Pedagógico para Docentes • Panamá 2026
+    </div>
+    <p>Alineado con el Programa Oficial de Cuarto Grado (Fase de Validación 2026) y la Guía Ampliada de Proyectos de la Región Escolar Panamá Oeste.</p>
+    <p class="text-slate-500">Diseñado para talleres de capacitación docente, círculos pedagógicos y acompañamiento directivo.</p>
+  </footer>
+
+  <!-- ==================== LOGICA INTERACTIVA JS ==================== -->
+  <script>
+    // Inicializar Iconos Lucide
+    lucide.createIcons();
+
+    // Navegación entre pestañas principales
+    function showSection(sectionId) {
+      document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+        btn.classList.add('text-slate-600', 'hover:bg-slate-100');
+      });
+
+      const activeSec = document.getElementById('sec-' + sectionId);
+      const activeTab = document.getElementById('tab-' + sectionId);
+
+      if (activeSec) activeSec.classList.remove('hidden');
+      if (activeTab) {
+        activeTab.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200');
+        activeTab.classList.remove('text-slate-600', 'hover:bg-slate-100');
+      }
+      lucide.createIcons();
+    }
+
+    // Navegación del Banco de Proyectos
+    function showProject(projId) {
+      document.querySelectorAll('.project-card').forEach(card => card.classList.add('hidden'));
+      document.querySelectorAll('.proj-btn').forEach(btn => {
+        btn.classList.remove('bg-emerald-600', 'text-white', 'shadow-md');
+        btn.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      });
+
+      const targetCard = document.getElementById('proj-' + projId);
+      const targetBtn = document.getElementById('btn-' + projId);
+
+      if (targetCard) targetCard.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-md');
+        targetBtn.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      }
+      lucide.createIcons();
+    }
+
+    // Copiar Prompt al portapapeles
+    function copyPrompt(elementId) {
+      const text = document.getElementById(elementId).innerText.replace(/^"|"$/g, '');
+      navigator.clipboard.writeText(text).then(() => {
+        alert("¡Prompt copiado al portapapeles! Pégalo directamente en Gemini o NotebookLM.");
+      }).catch(err => {
+        console.error("Error al copiar:", err);
+      });
+    }
+
+    // Simulador de Proyectos Automático
+    function generarIdeaProyecto() {
+      const m1 = document.getElementById('sel-mat1').value;
+      const m2 = document.getElementById('sel-mat2').value;
+      const ctx = document.getElementById('sel-contexto').value;
+      const resDiv = document.getElementById('resultado-simulador');
+
+      let titulo = "";
+      let pregunta = "";
+      let producto = "";
+      let detalle = "";
+
+      if (ctx === "Alimentación") {
+        titulo = "🍽️ La Lonchera Científica y Creativa de 4°";
+        pregunta = `¿Cómo podemos calcular las calorías y nutrientes de nuestros recreos escolares usando ${m1} y comunicar recetas sanas con ${m2}?`;
+        producto = "Un recetario escolar ilustrado con degustación de bocadillos saludables y análisis de etiquetas.";
+        detalle = `Con ${m1} los niños exploran alimentos y unidades de masa/capacidad; con ${m2} redactan instructivos claros o ilustran afiches de sensibilización.`;
+      } else if (ctx === "Agua y Clima") {
+        titulo = "💧 Guardianes del Agua y los Ríos de Nuestra Provincia";
+        pregunta = `¿Cómo afecta el uso del agua a nuestra provincia y qué artefacto o campaña podemos crear articulando ${m1} y ${m2}?`;
+        producto = "Filtro casero con piedras/arena y medidor de lluvia (pluviómetro) escolar con bitácora meteorológica.";
+        detalle = `Se relacionan los estados de la materia y el relieve de la provincia con canciones, fábulas o campañas de concientización cívica.`;
+      } else if (ctx === "Basura y Reciclaje") {
+        titulo = "♻️ Eco-Inventores en Acción";
+        pregunta = `¿Qué máquinas o mensajes creativos podemos inventar con ${m1} y ${m2} para transformar los desechos plásticos de la escuela?`;
+        producto = "Mural tridimensional de tapitas plásticas y prototipo de palanca para compactar latas/botellas.";
+        detalle = `Se une el estudio de máquinas simples y medición de superficies con la expresión artística y los valores de conservación ambiental.`;
+      } else {
+        titulo = "🎭 El Baúl de las Tradiciones y Leyendas de mi Tierra";
+        pregunta = `¿De qué manera podemos investigar los personajes históricos y leyendas de nuestro corregimiento mediante ${m1} y representarlos con ${m2}?`;
+        producto = "Teatro de títeres o radioteatro escolar presentado a los niños de primer ciclo.";
+        detalle = `Se exploran los acontecimientos históricos y datos geográficos combinándolos con la redacción narrativa de guiones y la expresión teatral.`;
+      }
+
+      resDiv.innerHTML = `
+        <div class="flex items-start justify-between gap-2 border-b border-teal-200 pb-2">
+          <div>
+            <span class="text-xs uppercase tracking-wider font-extrabold text-teal-800">Propuesta Generada para Docentes:</span>
+            <h4 class="text-base md:text-lg font-black text-slate-900 mt-0.5">${titulo}</h4>
+          </div>
+          <span class="bg-teal-600 text-white font-bold text-xs px-2.5 py-1 rounded-full">MEDUCA 2026</span>
+        </div>
+        <p class="text-slate-700"><strong>❓ Pregunta Retadora:</strong> ${pregunta}</p>
+        <p class="text-slate-700"><strong>📦 Producto Final Integrado:</strong> ${producto}</p>
+        <p class="text-slate-600 bg-white p-2.5 rounded-xl border border-teal-100"><strong>💡 Enfoque Curricular:</strong> ${detalle}</p>
+        <div class="pt-1 flex justify-end">
+          <button onclick="copiarPropuesta('${titulo}', '${pregunta}', '${producto}')" class="px-3 py-1 bg-teal-200 hover:bg-teal-300 text-teal-900 font-bold rounded-lg text-xs flex items-center gap-1">
+            <i data-lucide="clipboard-check" class="w-3.5 h-3.5"></i> Copiar a mi Plan Didáctico
+          </button>
+        </div>
+      `;
+      resDiv.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function copiarPropuesta(t, p, pr) {
+      const texto = `PROYECTO: ${t}\nPREGUNTA RETADORA: ${p}\nPRODUCTO FINAL: ${pr}`;
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("¡Propuesta copiada lista para pegar en tu planificación didáctica!");
+      });
+    }
+  </script>
+</body>
+</html>
